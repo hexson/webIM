@@ -1,0 +1,6 @@
+# npm module
+node_modules
+# pck avatar img
+public/images/avatar.pck.png
+
+public/stylesheets/*.css
