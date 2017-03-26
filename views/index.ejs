@@ -6,7 +6,7 @@
   </head>
   <body>
     <div class="webim-container">
-      <div class="webim-wrap">
+      <div class="webim-wrap" style="display: none;">
         <div class="webim-friends">
           <div class="webim-info bbox">
             <span class="fl" style="background-image: url('images/avatar1.png');"></span>
@@ -60,9 +60,27 @@
           </div>
         </div>
       </div>
+      <div class="webim-sign">
+        <div class="webim-login bbox">
+          <h3>登录</h3>
+          <form>
+            <label>
+              <span class="mt15">您的账号</span>
+              <input class="mt5 transition-middle bbox" type="text" placeholder="输入您的账号" autocomplete="off" />
+            </label>
+            <label>
+              <span class="mt15">登录密码</span>
+              <input class="mt5 transition-middle bbox" type="password" placeholder="输入您的登录密码" />
+            </label>
+            <button id="login" type="button" class="mt30 bbox">登录</button>
+          </form>
+        </div>
+      </div>
     </div>
   </body>
   <script src="javascripts/jquery-2.2.4.min.js"></script>
   <script src="javascripts/jquery.nicescroll.min.js"></script>
+  <script src="javascripts/socket.io.min.js"></script>
+  <script src="javascripts/md5.js"></script>
   <script src="javascripts/index.js"></script>
 </html>
