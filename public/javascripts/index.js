@@ -12,4 +12,25 @@
   }).blur(function(){
   	$('.im-cvs-send').removeClass('bfff');
   });
+  /* socket */
+  var chat = {
+    login: function(){},
+    init: function(){
+      this.socket = io.connect('http://localhost:4000');
+      console.log(this.socket);
+    }
+  };
+  chat.init();
+  // $.ajax({
+  //   type: 'post',
+  //   url: 'http://localhost:3000/api/login',
+  //   data: {account: '10001', password: md5('123456')},
+  //   dataType: 'json',
+  //   success: function(data){
+  //     console.log(data);
+  //   },
+  //   error: function(err){
+  //     console.log(err);
+  //   }
+  // })
 });
