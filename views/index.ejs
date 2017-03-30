@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <div class="webim-container">
+    <div class="webim-container" ng-controller="webim">
       <div class="webim-wrap" style="display: none;">
         <div class="webim-friends">
           <div class="webim-info bbox">
             <span class="fl" style="background-image: url('images/avatar1.png');"></span>
             <div class="fl">
-              <b len="12">长风</b>
-              <span len="28">这个人很懒，什么都没写。</span>
+              <b len="12">{{user.nickname}}</b>
+              <span len="28">{{user.signature ? user.signature : '这个人很懒，什么都没写。'}}</span>
             </div>
           </div>
           <div class="im-f-list">
-            <div class="im-f-item bbox">
+            <div class="im-f-item bbox" ng-click="expression">
               <span class="fl" style="background-image: url('images/avatar2.png');"></span>
               <div class="im-f-info">
                 <span class="f-time fr">16:11</span>
@@ -54,31 +54,52 @@
               <p class="im-dispatch-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
             </div>
           </div>
-          <div class="im-cvs-send">
-            <textarea class="bbox pl20 pr20 pt10 pb10"></textarea>
+          <div class="im-cvs-send" ng-class="{'bfff': sendBg}">
+            <textarea class="bbox pl20 pr20 pt10 pb10" ng-focus="tFocusBlur()" ng-blur="tFocusBlur()"></textarea>
             <button class="fr mt10 mr20">发送(Enter)</button>
           </div>
         </div>
       </div>
-      <div class="webim-sign">
-        <div class="webim-login bbox">
+      <div class="webim-sign" style="display: none;">
+        <div id="loginView" class="webim-login bbox">
           <h3>登录</h3>
           <form>
             <label>
               <span class="mt15">您的账号</span>
-              <input class="mt5 transition-middle bbox" type="text" placeholder="输入您的账号" autocomplete="off" />
+              <input class="mt5 transition-middle bbox" type="text" ng-model="loginaccount" placeholder="输入您的账号" autocomplete="off" />
             </label>
             <label>
               <span class="mt15">登录密码</span>
-              <input class="mt5 transition-middle bbox" type="password" placeholder="输入您的登录密码" />
+              <input class="mt5 transition-middle bbox" type="password" ng-model="loginpassword" ng-keyup="login($event)" placeholder="输入您的登录密码" />
             </label>
-            <button id="login" type="button" class="mt30 bbox">登录</button>
+            <button type="button" class="mt30 bbox" ng-click="login()">登录</button>
           </form>
+          <div><a href="javascript:void(0);" ng-click="signinGo()">注册账号</a></div>
+        </div>
+        <div id="signinView" class="webim-login webim-signin bbox" style="display: none;">
+          <h3>注册</h3>
+          <form>
+            <label>
+              <span class="mt15">填写昵称</span>
+              <input class="mt5 transition-middle bbox" type="text" ng-model="signinaccount" placeholder="输入您的昵称" autocomplete="off" />
+            </label>
+            <label>
+              <span class="mt15">设置登录密码</span>
+              <input class="mt5 transition-middle bbox" type="password" ng-model="signinpassword" placeholder="输入您想设置的登录密码" />
+            </label>
+            <label>
+              <span class="mt15">再次输入密码</span>
+              <input class="mt5 transition-middle bbox" type="password" ng-model="signinpasswordagn" ng-keyup="signin($event)" placeholder="请再次输入设置的登录密码" />
+            </label>
+            <button type="button" class="mt30 bbox" ng-click="signin()">注册</button>
+          </form>
+          <div><a href="javascript:void(0);" ng-click="loginGo()">登录账号</a></div>
         </div>
       </div>
     </div>
   </body>
   <script src="javascripts/jquery-2.2.4.min.js"></script>
+  <script src="javascripts/angular-1.6.4.min.js"></script>
   <script src="javascripts/jquery.nicescroll.min.js"></script>
   <script src="javascripts/socket.io.min.js"></script>
   <script src="javascripts/md5.js"></script>
