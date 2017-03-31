@@ -1,34 +1,25 @@
 var app = require('express')();
-var mongoose = require('mongoose');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-var Schema = mongoose.Schema;
-
-
-mongoose.connect('mongodb://localhost/webim');
-mongoose.Promise = require('bluebird');
+var db = require('./schema');
 
 
 io.on('connection', function(socket){
-  console.log('a user connected', socket);
+  console.log('connected:', socket.id, new Date().toLocaleString());
   socket.on('login', function(obj){
-    console.log(obj);
-    return;
-    socket.name = obj.userid;
-    if(!onlineUsers.hasOwnProperty(obj.userid)) {
-      onlineUsers[obj.userid] = obj.username;
-      //在线人数+1
-      onlineCount++;
-    }
-    io.emit('login', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
-    console.log(obj.username+'加入了聊天室');
+    socket.name = obj.token;
+    db.User.findOne({token: obj.token}, {_id: 0, password: 0}, function(err, doc){
+      if (doc) io.emit('login', {id: socket.id, user: doc});
+      else io.emit('login', null);
+    });
   });
   socket.on('message', function(obj){
     io.emit('message', obj);
     console.log(obj.username+'说：'+obj.content + ' ' + new Date().toLocaleString());
   });
   socket.on('disconnect', function(){
+    console.log('disconnect:', socket.id, new Date().toLocaleString());
     return;
     //将退出的用户从在线列表中删除
     if(onlineUsers.hasOwnProperty(socket.name)) {
