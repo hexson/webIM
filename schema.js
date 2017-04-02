@@ -19,10 +19,17 @@ var UserSchema = new Schema({
   token: String,
   create_at: Number
 }, {versionKey: false});
+var ChatSchema = new Schema({
+  from: Number,
+  to: Number,
+  content: String,
+  send_at: Number
+}, {versionKey: false});
 
 var schema = {
   User: mongoose.model('user', UserSchema),
-  UserId: mongoose.model('counter', CounterId)
+  UserId: mongoose.model('counter', CounterId),
+  Chat: mongoose.model('chat', ChatSchema)
 };
 
 module.exports = schema;
