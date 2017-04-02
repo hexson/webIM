@@ -158,6 +158,7 @@
     $('.im-f-list').on('click', '.im-f-item', function(){
       $('.im-f-item').removeClass('im-item-active');
       $(this).addClass('im-item-active');
+      $('textarea').focus();
     });
     var chat = $rootScope.chat;
     chat.init(vm);
