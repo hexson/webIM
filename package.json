@@ -3,7 +3,7 @@
   "version": "1.0.0-rc1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "set PORT=4000 && supervisor -w routes,app.js,schema.js,socket.js,utils.js ./bin/www"
   },
   "dependencies": {
     "blueimp-md5": "^2.7.0",
