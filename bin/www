@@ -8,6 +8,9 @@ var app = require('../app');
 var debug = require('debug')('webIM:server');
 var http = require('http');
 
+var socket = require('../socket');
+socket.listen((parseInt(process.env.PORT)+1) || '4001');
+
 /**
  * Get port from environment and store in Express.
  */
