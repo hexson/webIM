@@ -4,14 +4,19 @@ var io = require('socket.io')(server);
 
 var db = require('./schema');
 
+var onlineUsers = {};
 
 io.on('connection', function(socket){
   console.log('connected:', socket.id, new Date().toLocaleString());
   socket.on('login', function(obj){
-    socket.name = obj.token;
+    // socket.name = obj.token;
     db.User.findOne({token: obj.token}, {_id: 0, password: 0}, function(err, doc){
-      if (doc) io.emit('login', {id: socket.id, user: doc});
-      else io.emit('login', null);
+      if (doc){
+        onlineUsers[doc.id] = socket.id;
+        console.log(onlineUsers);
+        io.sockets.sockets[socket.id].emit('login', doc);
+      }
+      else io.sockets.sockets[socket.id].emit('login', null);
     });
   });
   socket.on('message', function(obj){
@@ -39,4 +44,4 @@ io.on('connection', function(socket){
 });
 
 
-server.listen(4000);
+module.exports = server;
