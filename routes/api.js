@@ -45,7 +45,7 @@ router.post('/signin', function(req, res, next){
     if (rt.length){
       res.send({code: 0, msg: '该昵称已经被占用'});
     }else {
-      db.UserId.findOneAndUpdate({table_name: 'user'}, {$inc: {sequence_value: 1}}, {new: true}, function(err, doc){
+      db.GetId.findOneAndUpdate({table_name: 'user'}, {$inc: {sequence_value: 1}}, {new: true}, function(err, doc){
         if (err) return res.send(err);
         var user = new db.User({
           id: doc.sequence_value,
@@ -54,7 +54,7 @@ router.post('/signin', function(req, res, next){
           nickname: nickname,
           password: password,
           signature: '',
-          online: 1,
+          friend_list: '',
           token: null,
           create_at: $u.getTime()
         });
@@ -95,7 +95,8 @@ router.post('/login', function(req, res, next){
     res.send({code: 0, msg: '密码不能为空'});
     return;
   }
-  db.User.findOne({account: account, nickname: nickname}, function(err, doc){
+  // db.User.findOne({account: account, nickname: nickname}, function(err, doc){
+  db.User.findOne({nickname: nickname}, function(err, doc){
     if (err) return res.send(err);
     if (doc && (account == doc.account || nickname == doc.nickname) && password == doc.password){
       var token = $u.md5(doc._id + $u.getRandomStr(12));
@@ -106,7 +107,11 @@ router.post('/login', function(req, res, next){
       })
       return;
     }
-    res.send({code: 0, msg: '账号或密码不正确'});
+    if (doc){
+      res.send({code: 0, msg: '账号或密码不正确'});
+    }else {
+      res.send({code: 0, msg: '账号不存在'});
+    }
   });
 });
 
