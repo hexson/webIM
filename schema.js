@@ -15,7 +15,7 @@ var UserSchema = new Schema({
   nickname: String,
   password: String,
   signature: String,
-  online: Number,
+  friend_list: String,
   token: String,
   create_at: Number
 }, {versionKey: false});
@@ -27,8 +27,8 @@ var ChatSchema = new Schema({
 }, {versionKey: false});
 
 var schema = {
+  GetId: mongoose.model('counter', CounterId),
   User: mongoose.model('user', UserSchema),
-  UserId: mongoose.model('counter', CounterId),
   Chat: mongoose.model('chat', ChatSchema)
 };
 
