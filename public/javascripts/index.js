@@ -8,7 +8,7 @@
   .run(['$rootScope', '$timeout', function($rootScope, $timeout){
     /* socket */
     var chat = $rootScope.chat = {
-      apiRest: 'http://localhost:3000/api/',
+      apiRest: 'http://localhost:4000/api/',
       login: function(nickname, password){
         var toastr = this.toastr;
         // if (!account){
@@ -135,12 +135,12 @@
           this.showLoginView();
           return;
         }
-        this.socket = io.connect('http://localhost:4000');
+        this.socket = io.connect('http://localhost:4001');
         this.socket.emit('login', {token: this.getLocalStorage('token')});
         this.socket.on('login', function(data){
           if (data){
-            vm.socketid = data.id;
-            vm.user = data.user;
+            console.log(data);
+            vm.user = data;
             $timeout(angular.noop);
             chat.showChat();
           }else {
@@ -179,6 +179,13 @@
     vm.signin = function(e){
       if (e && e.keyCode !== 13) return;
       chat.signin(vm.signinaccount, vm.signinpassword, vm.signinpasswordagn)
+    }
+    vm.logout = function(){
+      var account = chat.getLocalStorage('account');
+      chat.clearLocalStorage();
+      vm.loginaccount = account;
+      chat.setLocalStorage('account', account);
+      chat.init(vm);
     }
   }])
 })();
