@@ -16,6 +16,18 @@
             </div>
           </div>
           <div class="im-f-list">
+            <div class="im-f-search bbox">
+              <div class="im-search-form bbox">
+                <input type="text" placeholder="输入用户昵称查询" />
+                <button class="fr">查询用户</button>
+              </div>
+              <div class="im-search-item bbox">
+                <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
+                <span class="s-name ml10">皮皮虾</span>
+                <button class="fr">+</button>
+              </div>
+              <p>无搜索结果</p>
+            </div>
             <div class="im-f-item bbox" ng-click="expression">
               <span class="fl" style="background-image: url('images/avatar2.png');"></span>
               <div class="im-f-info">
@@ -35,7 +47,7 @@
           </div>
         </div>
         <div class="webim-conversation">
-          <button class="logout transition-middle">退出</button>
+          <button class="logout transition-middle" ng-click="logout()">退出</button>
           <div class="im-cvs-name">皮皮虾</div>
           <div class="im-cvs-cont bbox">
             <div class="im-cvs-accept fl mt20">
