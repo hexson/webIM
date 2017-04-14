@@ -88,6 +88,20 @@ io.on('connection', function(socket){
   socket.on('addCancel', function(id){
     io.sockets.sockets[onlineUsers[id]].emit('addCancel', '对方拒绝了您的好友申请');
   });
+  socket.on('getmsg', function(own, id){
+    var min = Math.min(own, id) + '';
+    var max = Math.max(own, id) + '';
+    var flag = min + max;
+    console.log(flag);
+    db.Chat.find({flag: flag}, function(err, doc){
+      console.log(err, doc);
+      if (err){
+        io.sockets.sockets[own].emit('getmsg', null);
+      }else {
+        io.sockets.sockets[own].emit('getmsg', doc);
+      }
+    })
+  });
   socket.on('message', function(obj){
     io.emit('message', obj);
     console.log(obj.username+'说：'+obj.content + ' ' + new Date().toLocaleString());
