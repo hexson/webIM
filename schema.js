@@ -20,6 +20,7 @@ var UserSchema = new Schema({
   create_at: Number
 }, {versionKey: false});
 var ChatSchema = new Schema({
+  flag: String,
   from: Number,
   to: Number,
   content: String,
