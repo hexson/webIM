@@ -15,13 +15,19 @@
               <span len="28">{{user.signature ? user.signature : '这个人很懒，什么都没写。'}}</span>
             </div>
           </div>
-          <div class="im-f-list bbox">
-            <div class="im-f-search ov bbox">
+          <div class="im-f-list">
+            <div class="im-f-search bbox transition-middle" ng-class="{'slide-show': searchShow}">
               <div class="im-search-form bbox">
-                <input type="text" placeholder="输入用户昵称查询" />
-                <button class="fr">查询用户</button>
+                <input type="text" ng-model="findUser" ng-keyup="find($event)" placeholder="输入用户昵称查询" />
+                <button class="fr" ng-click="find()">查询用户</button>
               </div>
-              <div class="im-search-item bbox">
+              <button class="close transition-middle" ng-show="searchShow" ng-click="searchHide()">&times;</button>
+              <div class="im-search-item bbox" ng-show="searchShow" ng-repeat="(k, v) in searchList">
+                <span class="avatar fl" style="background-image: url('images/avatar{{v.avatar}}.png');"></span>
+                <span class="s-name ml10">{{v.nickname}}</span>
+                <button class="fr bbox" ng-click="add($event, v.id)" ng-show="user.friend_list.split(',').indexOf(v.id) < 0">添加</button>
+              </div>
+              <!-- <div class="im-search-item bbox">
                 <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
                 <span class="s-name ml10">皮皮虾</span>
                 <button class="fr bbox">添加</button>
@@ -30,30 +36,26 @@
                 <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
                 <span class="s-name ml10">皮皮虾</span>
                 <button class="fr bbox">添加</button>
-              </div>
-              <div class="im-search-item bbox">
-                <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
-                <span class="s-name ml10">皮皮虾</span>
-                <button class="fr bbox">添加</button>
-              </div>
-              <p>无搜索结果</p>
+              </div> -->
+              <p ng-show="searchShow && !searchList.length">无搜索结果</p>
             </div>
-            <div class="im-f-item bbox" ng-click="expression">
-              <span class="fl" style="background-image: url('images/avatar2.png');"></span>
+            <div class="im-f-item bbox" ng-repeat="(k, v) in friends" ng-click="expression">
+              <span class="fl" style="background-image: url('images/avatar{{v.avatar}}.png');"></span>
               <div class="im-f-info">
-                <span class="f-time fr">16:11</span>
-                <span class="f-name">皮皮虾</span>
-                <span class="f-msg">皮皮虾我们走！</span>
+                <span class="f-time fr">{{v.time}}</span>
+                <span class="f-name">{{v.nickname}}</span>
+                <span class="f-msg">{{v.content}}</span>
               </div>
             </div>
-            <div class="im-f-item bbox">
+            <p class="not-friends" ng-show="not_friends && !friends.length">暂无好友哦，请先添加 ^_^</p>
+            <!-- <div class="im-f-item bbox">
               <span class="fl" style="background-image: url('images/avatar3.png');"></span>
               <div class="im-f-info">
                 <span class="f-time fr">16:15</span>
                 <span class="f-name">皮皮虾</span>
                 <span class="f-msg">皮皮虾我们走！</span>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="webim-conversation">
@@ -117,6 +119,14 @@
             <button type="button" class="mt30 bbox" ng-click="signin()">注册</button>
           </form>
           <div><a href="javascript:void(0);" ng-click="loginGo()">登录账号</a></div>
+        </div>
+      </div>
+      <div class="add-msg ng-hide" ng-show="msgs.length">
+        <div class="msgs" ng-repeat="(k, v) in msgs">
+          <span class="msgs-avatar fl" style="background-image: url('images/avatar{{v.avatar}}.png');"></span>
+          <span class="msgs-name fl"><strong>{{v.nickname}}</strong><br /><small>请求加您为好友</small></span>
+          <button class="msgs-agree fr" ng-click="addAgree(v.id, k)">同意</button>
+          <button class="msgs-cancel fr" ng-click="addCancel(v.id, k)">拒绝</button>
         </div>
       </div>
     </div>
