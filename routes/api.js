@@ -50,7 +50,8 @@ router.post('/signin', function(req, res, next){
         if (err) return res.send(err);
         var user = new db.User({
           id: doc.sequence_value,
-          avatar: 1,
+          // avatar: 1,
+          avatar: Math.floor(Math.random() * 10) + 1,
           account: '1000' + doc.sequence_value,
           nickname: nickname,
           password: password,
