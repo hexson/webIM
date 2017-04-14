@@ -16,7 +16,8 @@ router.get('/finduser', function(req, res, next){
     return;
   }
   var fuzzy = req.query.fuzzy;
-  db.User.find({nickname: fuzzy && fuzzy === 'true' ? {$regex: nickname, $options: 'i'} : nickname}, {_id: 0, account: 1, nickname: 1}, function(err, doc){
+  var showData = {_id: 0, avatar: 1, id: 1, nickname: 1};
+  db.User.find({nickname: fuzzy && fuzzy === 'true' ? {$regex: nickname, $options: 'i'} : nickname}, showData, function(err, doc){
     if (err) return res.send(err);
     res.send({
       code: 1,
