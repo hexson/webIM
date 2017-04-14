@@ -39,7 +39,7 @@
               </div> -->
               <p ng-show="searchShow && !searchList.length">无搜索结果</p>
             </div>
-            <div class="im-f-item bbox" ng-repeat="(k, v) in friends" ng-click="expression">
+            <div class="im-f-item bbox" ng-repeat="(k, v) in friends" ng-class="{'im-item-active': itemcls[v.id]}" ng-click="itemFocus(v)">
               <span class="fl" style="background-image: url('images/avatar{{v.avatar}}.png');"></span>
               <div class="im-f-info">
                 <span class="f-time fr">{{v.time}}</span>
@@ -60,13 +60,13 @@
         </div>
         <div class="webim-conversation">
           <button class="logout transition-middle" ng-click="logout()">退出</button>
-          <div class="im-cvs-name">皮皮虾</div>
-          <div class="im-cvs-cont bbox">
-            <div class="im-cvs-accept fl mt20">
-              <span class="fl" style="background-image: url('images/avatar2.png');"></span>
-              <p class="im-accept-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
+          <div class="im-cvs-name" ng-show="itemcls">{{toName}}</div>
+          <div class="im-cvs-cont bbox" ng-show="itemcls">
+            <div class="fl mt20" ng-repeat="(k, v) in msgList" ng-class="{'im-cvs-accept': v.from == user.id, 'im-cvs-dispatch': v.from != user.id}">
+              <span class="fl" style="background-image: url('images/avatar{{v.from == user.id ? user.avatar : toAvatar}}.png');"></span>
+              <p class="im-accept-con">{{v.content}}</p>
             </div>
-            <div class="im-cvs-accept fl mt20">
+            <!-- <div class="im-cvs-accept fl mt20">
               <span class="fl" style="background-image: url('images/avatar2.png');"></span>
               <p class="im-accept-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
             </div>
@@ -77,9 +77,9 @@
             <div class="im-cvs-dispatch fr mt20">
               <span class="fr" style="background-image: url('images/avatar1.png');"></span>
               <p class="im-dispatch-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
-            </div>
+            </div> -->
           </div>
-          <div class="im-cvs-send" ng-class="{'bfff': sendBg}">
+          <div class="im-cvs-send" ng-show="itemcls" ng-class="{'bfff': sendBg}">
             <textarea class="bbox pl20 pr20 pt10 pb10" ng-focus="tFocusBlur()" ng-blur="tFocusBlur()"></textarea>
             <button class="fr mt10 mr20">发送(Enter)</button>
           </div>

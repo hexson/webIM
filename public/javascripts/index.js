@@ -191,20 +191,20 @@
           console.log('addCancel: ', data);
           chat.toastr(data);
         });
+        this.socket.on('getmsg', function(data){
+          console.log('getmsg: ', data);
+          vm.msgList = data;
+          $timeout(angular.noop);
+        });
       }
     };
   }])
   .controller('webim', ['$scope', '$rootScope', '$timeout', function(vm, $rootScope, $timeout){
+    $('.im-f-list').niceScroll(scrollCof);
     var scrollCof = {
       cursorcolor: '#d1d7e6',
       cursorborder: '0'
     };
-    $('.im-f-list').niceScroll(scrollCof);
-    $('.im-f-list').on('click', '.im-f-item', function(){
-      $('.im-f-item').removeClass('im-item-active');
-      $(this).addClass('im-item-active');
-      $('textarea').focus();
-    });
     var chat = $rootScope.chat;
     chat.init(vm);
     vm.loginaccount = chat.getLocalStorage('account');
@@ -261,6 +261,15 @@
     vm.addCancel = function(id, i){
       vm.msgs.splice(i, 1);
       chat.socket.emit('addCancel', id);
+    }
+    vm.itemFocus = function(v){
+      vm.itemcls = {};
+      vm.itemcls[v.id] = true;
+      vm.toId = v.id;
+      vm.toName = v.nickname;
+      vm.toAvatar = v.avatar;
+      chat.socket.emit('getmsg', vm.user.id, v.id);
+      $('textarea').focus();
     }
   }])
 })();
