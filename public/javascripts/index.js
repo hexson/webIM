@@ -32,11 +32,11 @@
           password: md5(password)
         }, function(data){
           if (data.code){
-            chat.init($rootScope, nickname, data.token);
+            chat.init(chat.vm, nickname, data.token);
           }else {
             chat.clearLocalStorage();
             toastr(data.msg);
-            chat.init($rootScope);
+            chat.init(chat.vm);
           }
         });
       },
@@ -61,11 +61,11 @@
           passwordagn: md5(passwordagn)
         }, function(data){
           if (data.code){
-            chat.init($rootScope, nickname, data.token);
+            chat.init(chat.vm, nickname, data.token);
           }else {
             chat.clearLocalStorage();
             toastr(data.msg);
-            chat.init($rootScope);
+            chat.init(chat.vm);
           }
         });
       },
@@ -126,6 +126,10 @@
         $('.webim-sign').hide();
         $('.webim-wrap').show();
       },
+      logout: function(){
+        this.socket.disconnect();
+        this.showLoginView();
+      },
       init: function(vm, account, token){
         if (account && token){
           this.setLocalStorage('account', account);
@@ -135,26 +139,67 @@
           this.showLoginView();
           return;
         }
+        var that = this;
+        this.vm = vm;
         this.socket = io.connect('http://localhost:4001');
         this.socket.emit('login', {token: this.getLocalStorage('token')});
         this.socket.on('login', function(data){
+          console.log('login: ', data);
           if (data){
-            console.log(data);
             vm.user = data;
             $timeout(angular.noop);
+            that.socket.emit('friends', data.friend_list.split(','));
             chat.showChat();
           }else {
             chat.showLoginView();
           }
         });
+        this.socket.on('friends', function(data){
+          console.log('friends: ', data);
+          if (data){
+            vm.friends = data;
+          }else {
+            vm.friends = [];
+            vm.not_friends = true;
+          }
+          $timeout(angular.noop);
+        });
+        this.socket.on('add', function(data){
+          console.log('add: ', data);
+          if (typeof data === 'string'){
+            chat.toastr(data);
+          }else {
+            var msgs = vm.msgs || [];
+            msgs.push(data);
+            vm.msgs = msgs;
+            $timeout(angular.noop);
+          }
+        });
+        this.socket.on('addAgree', function(data){
+          console.log('addAgree: ', data);
+          if (typeof data === 'string'){
+            chat.toastr(data);
+          }else {
+            vm.friends = vm.friends || [];
+            vm.friends.push(data);
+            vm.user.friend_list += ',' + data.id;
+            chat.toastr('已成为好友啦');
+            $timeout(angular.noop);
+          }
+        });
+        this.socket.on('addCancel', function(data){
+          console.log('addCancel: ', data);
+          chat.toastr(data);
+        });
       }
     };
   }])
-  .controller('webim', ['$scope', '$rootScope', function(vm, $rootScope){
-    $('.im-f-list').niceScroll({
-      cursorcolor: '#d4d4d4',
-      cursorborder : '0'
-    });
+  .controller('webim', ['$scope', '$rootScope', '$timeout', function(vm, $rootScope, $timeout){
+    var scrollCof = {
+      cursorcolor: '#d1d7e6',
+      cursorborder: '0'
+    };
+    $('.im-f-list').niceScroll(scrollCof);
     $('.im-f-list').on('click', '.im-f-item', function(){
       $('.im-f-item').removeClass('im-item-active');
       $(this).addClass('im-item-active');
@@ -185,7 +230,37 @@
       chat.clearLocalStorage();
       vm.loginaccount = account;
       chat.setLocalStorage('account', account);
-      chat.init(vm);
+      chat.logout();
+    }
+    vm.find = function(e){
+      if (e && e.keyCode !== 13) return;
+      if (!vm.findUser){
+        return chat.toastr('搜索昵称不能为空');
+      }
+      chat.get('finduser', {nickname: vm.findUser, fuzzy: true}, function(data){
+        vm.searchShow = true;
+        vm.searchList = data.users;
+        $timeout(angular.noop);
+      })
+    }
+    vm.searchHide = function(){
+      vm.findUser = null;
+      vm.searchShow = false;
+    }
+    vm.add = function(e, id){
+      if ($(e.target).html() == '已发送'){
+        return chat.toastr('好友申请请求已发送');
+      }
+      $(e.target).html('已发送');
+      chat.socket.emit('add', id, vm.user);
+    }
+    vm.addAgree = function(id, i){
+      vm.msgs.splice(i, 1);
+      chat.socket.emit('addAgree', vm.user.id, id);
+    }
+    vm.addCancel = function(id, i){
+      vm.msgs.splice(i, 1);
+      chat.socket.emit('addCancel', id);
     }
   }])
 })();
