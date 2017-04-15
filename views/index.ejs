@@ -42,7 +42,7 @@
             <div class="im-f-item bbox" ng-repeat="(k, v) in friends" ng-class="{'im-item-active': itemcls[v.id]}" ng-click="itemFocus(v)">
               <span class="fl" style="background-image: url('images/avatar{{v.avatar}}.png');"></span>
               <div class="im-f-info">
-                <span class="f-time fr">{{v.time}}</span>
+                <span class="f-time fr">{{v.time ? (v.time+'000' | date: 'MM/dd HH:mm') : ''}}</span>
                 <span class="f-name">{{v.nickname}}</span>
                 <span class="f-msg">{{v.content}}</span>
               </div>
@@ -62,9 +62,9 @@
           <button class="logout transition-middle" ng-click="logout()">退出</button>
           <div class="im-cvs-name" ng-show="itemcls">{{toName}}</div>
           <div class="im-cvs-cont bbox" ng-show="itemcls">
-            <div class="fl mt20" ng-repeat="(k, v) in msgList" ng-class="{'im-cvs-accept': v.from == user.id, 'im-cvs-dispatch': v.from != user.id}">
-              <span class="fl" style="background-image: url('images/avatar{{v.from == user.id ? user.avatar : toAvatar}}.png');"></span>
-              <p class="im-accept-con">{{v.content}}</p>
+            <div class="mt20" ng-repeat="(k, v) in msgList" ng-class="{'im-cvs-accept fl': v.from != user.id, 'im-cvs-dispatch fr': v.from == user.id}">
+              <span ng-class="{'fl': v.from != user.id, 'fr': v.from == user.id}" ng-style="{'background-image': 'url(\'images/avatar' + (v.from == user.id ? user.avatar : toAvatar) + '.png\')'}"></span>
+              <p ng-class="{'im-accept-con': v.from != user.id, 'im-dispatch-con': v.from == user.id}">{{v.content}}</p>
             </div>
             <!-- <div class="im-cvs-accept fl mt20">
               <span class="fl" style="background-image: url('images/avatar2.png');"></span>
@@ -80,8 +80,8 @@
             </div> -->
           </div>
           <div class="im-cvs-send" ng-show="itemcls" ng-class="{'bfff': sendBg}">
-            <textarea class="bbox pl20 pr20 pt10 pb10" ng-focus="tFocusBlur()" ng-blur="tFocusBlur()"></textarea>
-            <button class="fr mt10 mr20">发送(Enter)</button>
+            <textarea class="bbox pl20 pr20 pt10 pb10" ng-model="msg" ng-focus="tFocusBlur()" ng-blur="tFocusBlur()" ng-keydown="replace($event)" ng-keyup="send($event)"></textarea>
+            <button class="fr mt10 mr20" ng-click="send()">发送(Enter)</button>
           </div>
         </div>
       </div>

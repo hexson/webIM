@@ -195,16 +195,54 @@
           console.log('getmsg: ', data);
           vm.msgList = data;
           $timeout(angular.noop);
+          $timeout(function(){
+            $('.im-cvs-cont').scrollTop($('.im-cvs-cont')[0].scrollHeight);
+          });
+        });
+        this.socket.on('message', function(data){
+          console.log('message: ', data);
+          console.info(data.from == vm.user.id);
+          if (data.from == vm.user.id){
+            console.info('own');
+            vm.msgList.push(data);
+            for (var i = 0; i < vm.friends.length; i++){
+              if (vm.friends[i].id == data.to){
+                vm.friends[i].content = data.content;
+                vm.friends[i].time = data.send_at;
+                break;
+              }
+            }
+            vm.msg = null;
+          }
+          if (data.to = vm.user.id){
+            if (data.from == vm.toId){
+              vm.msgList.push(data);
+            }else {
+              for (var i = 0; i < vm.friends.length; i++){
+                if (vm.friends[i].id == data.from){
+                  vm.friends[i].content = data.content;
+                  vm.friends[i].time = data.send_at;
+                  break;
+                }
+              }
+            }
+            console.log('to');
+          }
+          $timeout(angular.noop);
+          $timeout(function(){
+            $('.im-cvs-cont').scrollTop($('.im-cvs-cont')[0].scrollHeight);
+          });
         });
       }
     };
   }])
   .controller('webim', ['$scope', '$rootScope', '$timeout', function(vm, $rootScope, $timeout){
-    $('.im-f-list').niceScroll(scrollCof);
     var scrollCof = {
       cursorcolor: '#d1d7e6',
       cursorborder: '0'
     };
+    $('.im-f-list').niceScroll(scrollCof);
+    $('.im-cvs-cont').niceScroll(scrollCof);
     var chat = $rootScope.chat;
     chat.init(vm);
     vm.loginaccount = chat.getLocalStorage('account');
@@ -269,7 +307,19 @@
       vm.toName = v.nickname;
       vm.toAvatar = v.avatar;
       chat.socket.emit('getmsg', vm.user.id, v.id);
-      $('textarea').focus();
+      setTimeout(function(){
+        $('textarea').trigger('focus');
+      }, 10);
+    }
+    vm.replace = function(e){
+      if (e && e.keyCode == 13){
+        e.preventDefault();
+      }
+    }
+    vm.send = function(e){
+      if (e && e.keyCode !== 13) return;
+      if (!vm.msg) return chat.toastr('发送内容不能为空');
+      chat.socket.emit('message', vm.user.id, vm.toId, vm.msg);
     }
   }])
 })();
