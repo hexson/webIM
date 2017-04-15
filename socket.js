@@ -2,6 +2,7 @@ var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+var $u = require('./utils');
 var db = require('./schema');
 
 var onlineUsers = {};
@@ -92,19 +93,36 @@ io.on('connection', function(socket){
     var min = Math.min(own, id) + '';
     var max = Math.max(own, id) + '';
     var flag = min + max;
-    console.log(flag);
-    db.Chat.find({flag: flag}, function(err, doc){
-      console.log(err, doc);
+    db.Chat.find({flag: flag}, {_id: 0, flag: 0}, function(err, doc){
       if (err){
-        io.sockets.sockets[own].emit('getmsg', null);
+        io.sockets.sockets[onlineUsers[own]].emit('getmsg', null);
       }else {
-        io.sockets.sockets[own].emit('getmsg', doc);
+        io.sockets.sockets[onlineUsers[own]].emit('getmsg', doc);
       }
     })
   });
-  socket.on('message', function(obj){
-    io.emit('message', obj);
-    console.log(obj.username+'说：'+obj.content + ' ' + new Date().toLocaleString());
+  socket.on('message', function(from, to, msg){
+    var min = Math.min(from, to) + '';
+    var max = Math.max(from, to) + '';
+    var flag = min + max;
+    var chat = new db.Chat({
+      flag: flag,
+      from: from,
+      to: to,
+      content: msg,
+      send_at: $u.getTime()
+    });
+    var promise = chat.save();
+    promise.then(function(result){
+      var message = {
+        from: result.from,
+        to: result.to,
+        content: result.content,
+        send_at: result.send_at
+      };
+      io.sockets.sockets[onlineUsers[from]].emit('message', message);
+      io.sockets.sockets[onlineUsers[to]].emit('message', message);
+    });
   });
   socket.on('disconnect', function(){
     console.log('disconnect:', socket.id, new Date().toLocaleString());
