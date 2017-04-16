@@ -116,5 +116,21 @@ router.post('/login', function(req, res, next){
     }
   });
 });
+router.post('/setsignature', function(req, res, next){
+  var token = req.body.token;
+  var signature = req.body.signature;
+  db.User.findOne({token: token}, function(err, doc){
+    if (err) return res.send(err);
+    if (doc && doc.id){
+      db.User.updateOne({_id: doc._id}, {$set: {signature: signature}}, function(error, result){
+        if (error) return res.send(error);
+        if (result.n > 0) res.send({code: 1, msg: '设置签名成功'});
+        else res.send({code: 0, msg: '设置签名失败'});
+      });
+      return;
+    }
+    res.send({code: 0, msg: 'token已过期'});
+  })
+});
 
 module.exports = router;
