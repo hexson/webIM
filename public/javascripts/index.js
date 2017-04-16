@@ -269,6 +269,31 @@
       chat.setLocalStorage('account', account);
       chat.logout();
     }
+    vm.setSign = function(){
+      vm.siinshow = true;
+      vm.signature = vm.user.signature;
+      $timeout(function(){
+        $('.webim-info input').trigger('focus');
+      });
+    }
+    vm.inputSi = function(e){
+      if (e && e.keyCode !== 13) return;
+      if (!vm.signature){
+        return vm.siinshow = false;
+      }
+      if (vm.signature.length > 28){
+        return chat.toastr('签名长度不能大于18个字');
+      }
+      chat.post('setsignature', {token: vm.user.token, signature: vm.signature}, function(data){
+        vm.siinshow = false;
+        if (data.code){
+          vm.user.signature = vm.signature;
+        }else {
+          chat.toastr(data.msg);
+        }
+        $timeout(angular.noop);
+      })
+    }
     vm.find = function(e){
       if (e && e.keyCode !== 13) return;
       if (!vm.findUser){
