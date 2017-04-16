@@ -12,7 +12,8 @@
             <span class="fl" style="background-image: url('images/avatar1.png');"></span>
             <div class="fl">
               <b len="12">{{user.nickname}}</b>
-              <span len="28">{{user.signature ? user.signature : '这个人很懒，什么都没写。'}}</span>
+              <span len="28" ng-hide="siinshow" ng-click="setSign()">{{user.signature ? user.signature : '这个人很懒，什么都没写。'}}</span>
+              <input type="text" ng-show="siinshow" ng-model="signature" ng-keyup="inputSi($event)">
             </div>
           </div>
           <div class="im-f-list">
