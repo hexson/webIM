@@ -31,11 +31,6 @@
                 <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
                 <span class="s-name ml10">皮皮虾</span>
                 <button class="fr bbox">添加</button>
-              </div>
-              <div class="im-search-item bbox">
-                <span class="avatar fl" style="background-image: url('images/avatar2.png');"></span>
-                <span class="s-name ml10">皮皮虾</span>
-                <button class="fr bbox">添加</button>
               </div> -->
               <p ng-show="searchShow && !searchList.length">无搜索结果</p>
             </div>
@@ -45,6 +40,7 @@
                 <span class="f-time fr">{{v.time ? (v.time+'000' | date: 'MM/dd HH:mm') : ''}}</span>
                 <span class="f-name">{{v.nickname}}</span>
                 <span class="f-msg">{{v.content}}</span>
+                <span class="f-num" ng-show="v.count">{{v.count}}</span>
               </div>
             </div>
             <p class="not-friends" ng-show="not_friends && !friends.length">暂无好友哦，请先添加 ^_^</p>
@@ -69,10 +65,6 @@
             <!-- <div class="im-cvs-accept fl mt20">
               <span class="fl" style="background-image: url('images/avatar2.png');"></span>
               <p class="im-accept-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
-            </div>
-            <div class="im-cvs-dispatch fr mt20">
-              <span class="fr" style="background-image: url('images/avatar1.png');"></span>
-              <p class="im-dispatch-con">皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！皮皮虾我们走！</p>
             </div>
             <div class="im-cvs-dispatch fr mt20">
               <span class="fr" style="background-image: url('images/avatar1.png');"></span>
@@ -136,5 +128,5 @@
   <script src="javascripts/jquery.nicescroll.min.js"></script>
   <script src="javascripts/socket.io.min.js"></script>
   <script src="javascripts/md5.js"></script>
-  <script src="javascripts/index.js"></script>
+  <script src="javascripts/index.min.js"></script>
 </html>
