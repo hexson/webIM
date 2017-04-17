@@ -203,7 +203,6 @@
           console.log('message: ', data);
           console.info(data.from == vm.user.id);
           if (data.from == vm.user.id){
-            console.info('own');
             vm.msgList.push(data);
             for (var i = 0; i < vm.friends.length; i++){
               if (vm.friends[i].id == data.to){
@@ -222,11 +221,11 @@
                 if (vm.friends[i].id == data.from){
                   vm.friends[i].content = data.content;
                   vm.friends[i].time = data.send_at;
+                  vm.friends[i].count = vm.friends[i].count ? (+vm.friends[i].count+1) : 1;
                   break;
                 }
               }
             }
-            console.log('to');
           }
           $timeout(angular.noop);
           $timeout(function(){
