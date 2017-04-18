@@ -9,8 +9,8 @@ var utils = {
   },
   /*
    * @Get an random strings
-   * @param len{Number}  strings length
-   * @param upperCase{Boolean}  strings have upper case
+   * @param len{Number}  string length
+   * @param upperCase{Boolean}  string have upper case
    */
   getRandomStr: function(len, upperCase){
     var str = '0123456789abcdefghijklmnopqrstuvwxyz'
@@ -23,7 +23,7 @@ var utils = {
   },
   /*
    * @String to md5
-   * @param str{String}  any
+   * @param str{String}  md5 string
    */
   md5: function(str){
     return md5(str);
